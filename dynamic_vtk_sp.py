@@ -57,14 +57,12 @@ wire_data = {
 }
 
 class AddPointCloudTimerCallback():
-    def __init__(self, renderer, iterations, d):
+    def __init__(self, renderer, iterations, d, path_3dmrk_json, path_2dmrk_nii, f_path):
         self.iterations = iterations
         self.renderer = renderer
         self.prev_actor = None
         self.d = d
 
-        path_3dmrk_json = 'Robot_0110_2022/Static 3D/F_1.mrk.json'
-        path_2dmrk_nii = 'Robot_0110_2022/Static 2D/newmarkers.nii.gz'
         p3d_list = get3dp(path_3dmrk_json)
         p2d_np= get2dp(path_2dmrk_nii)
         self.points = np.array(p3d_list)
@@ -73,7 +71,6 @@ class AddPointCloudTimerCallback():
         self.curve3d = gen_curve(p3d_np)
         self.curve2d = gen_curve(p2d_np)
 
-        f_path = 'Robot_0110_2022/Dynamic 2D'
         # save_path = '0108_2dmoving_bgsub'
         # os.makedirs(save_path, exist_ok=True)
         self.im_list = read_img(f_path)
@@ -159,6 +156,10 @@ def load_aota(filename):
 if __name__ == "__main__":
     # path = 'static_3d_crossS.nii.gz'
 
+    path_3dmrk_json = 'Robot_0110_2022/Static 3D/F_1.mrk.json'
+    path_2dmrk_nii = 'Robot_0110_2022/Static 2D/newmarkers.nii.gz'
+    f_path = 'Robot_0110_2022/Dynamic 2D'
+
     aota_f = 'Robot_0110_2022/Static 3D/aota.vtp'
     pd_aota = load_aota(aota_f)
 
@@ -186,7 +187,7 @@ if __name__ == "__main__":
     rwi.SetInteractorStyle(vtk.vtkInteractorStyleTrackballCamera())
     rwi.Initialize()
 
-    cb = AddPointCloudTimerCallback(r, 3000, wire_data)
+    cb = AddPointCloudTimerCallback(r, 3000, wire_data, path_3dmrk_json, path_2dmrk_nii, f_path)
     rwi.AddObserver('TimerEvent', cb.execute)
     cb.timerId = rwi.CreateRepeatingTimer(100)
 
